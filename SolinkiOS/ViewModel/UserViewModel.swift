@@ -10,11 +10,13 @@ import Foundation
 @MainActor
 class UserViewModel : ObservableObject{
     private let userRepository: UserRepository
+    private let photoRepository: PhotoRepository
     @Published var state: StateHolder<UserStateHolder> = .loading
     private var fetchDataTask: Task<Void, Never>? // Store the Task
 
-    init(userRepository: UserRepository, userId: Int, pageNum: Int, pagePer: Int) {
+    init(userRepository: UserRepository, photoRepository: PhotoRepository, userId: Int, pageNum: Int, pagePer: Int) {
         self.userRepository = userRepository
+        self.photoRepository = photoRepository
         fetchData(userId:userId, pageNum: pageNum, pagePer: pagePer)
     }
 
@@ -27,7 +29,17 @@ class UserViewModel : ObservableObject{
             }
             switch userResult {
             case .success(let userResponse):
-                self.state = .success(UserStateHolder(userName: userResponse.name, photoUrl: ""))
+                
+                let photoResult = await photoRepository.fetchPhotoById(page: pageNum, perPage: pagePer)
+                if Task.isCancelled {
+                    return // Exit if cancelled
+                }
+                switch photoResult {
+                case .success(let photoResponse):
+                    self.state = .success(UserStateHolder(userName: userResponse.name, photoUrl: photoResponse.photos.randomElement()?.src.original ?? ""))
+                case .error(let code, let message):
+                    self.state = .error("User Error \(code): \(message ?? "")")
+                }
             case .error(let code, let message):
                 self.state = .error("User Error \(code): \(message ?? "")")
             }

@@ -12,7 +12,7 @@ struct HomeScreen: View {
 
     var body: some View {
         VStack {
-            Button("Navigate to User") {
+            Button("GoTo User Screen") {
                 onNavigateToUser()
             }
         }
