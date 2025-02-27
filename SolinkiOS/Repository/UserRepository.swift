@@ -14,16 +14,17 @@ protocol UserRepository {
     func fetchUserById(userId: Int) async -> ApiResult<UserResponse>
 }
 
-class UserRepositoryImpl: UserRepository {
-    private let userService: UserService
-
-    init(userService: UserService) {
-        self.userService = userService
+class MockUserRepository: UserRepository {
+    func fetchUserById(userId: Int) async -> ApiResult<UserResponse> {
+        return .success(UserResponse(id: 0, name: "Josh", username: "JoshUser", email: "Email"))
     }
+}
+
+class UserRepositoryImpl: UserRepository {
 
     func fetchUserById(userId: Int) async -> ApiResult<UserResponse> {
         do {
-            let response: UserResponse = try await userService.request("users/\(userId)", method: .get)
+            let response: UserResponse = try await UserService.shared.request("users/\(userId)", method: .get)
             return .success(response)
         } catch {
             if let afError = error as? AFError {

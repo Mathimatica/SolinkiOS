@@ -9,14 +9,12 @@ import Foundation
 
 @MainActor
 class UserViewModel : ObservableObject{
-    private let userRepository: UserRepository
-    private let photoRepository: PhotoRepository
+    private let userRepository: UserRepository = DependencyUtil.shared.makeUserRepository()
+    private let photoRepository: PhotoRepository = DependencyUtil.shared.makePhotoRepository()
     @Published var state: StateHolder<UserStateHolder> = .loading
     private var fetchDataTask: Task<Void, Never>? // Store the Task
 
-    init(userRepository: UserRepository, photoRepository: PhotoRepository, userId: Int, pageNum: Int, pagePer: Int) {
-        self.userRepository = userRepository
-        self.photoRepository = photoRepository
+    init(userId: Int, pageNum: Int, pagePer: Int) {
         fetchData(userId:userId, pageNum: pageNum, pagePer: pagePer)
     }
 
@@ -24,14 +22,14 @@ class UserViewModel : ObservableObject{
         fetchDataTask = Task { // Store the Task
             self.state = .loading
             let userResult = await userRepository.fetchUserById(userId: userId)
-            if Task.isCancelled {
+            if fetchDataTask?.isCancelled ?? true { // Check again
                 return // Exit if cancelled
             }
             switch userResult {
             case .success(let userResponse):
                 
                 let photoResult = await photoRepository.fetchPhotoById(page: pageNum, perPage: pagePer)
-                if Task.isCancelled {
+                if fetchDataTask?.isCancelled ?? true { // Check again
                     return // Exit if cancelled
                 }
                 switch photoResult {

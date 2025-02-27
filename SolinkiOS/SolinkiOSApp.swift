@@ -9,6 +9,11 @@ import SwiftUI
 
 @main
 struct SolinkiOSApp: App {
+    
+    init() {
+        DependencyUtil.shared.setEnvironment(.app)
+    }
+    
     var body: some Scene {
         WindowGroup {
             SLNav()

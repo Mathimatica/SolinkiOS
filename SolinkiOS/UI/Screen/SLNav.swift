@@ -23,7 +23,7 @@ struct SLNav: View {
                .navigationDestination(for: Destination.self) { destination in
                    switch destination {
                    case .user(let userId, let pageNum, let pagePer):
-                       let userViewModel = UserViewModel(userRepository: UserRepositoryImpl(userService: UserService.shared), photoRepository: PhotoRepositoryImpl(photoService: PhotoService.shared), userId: userId, pageNum: pageNum, pagePer: pagePer)
+                       let userViewModel = UserViewModel(userId: userId, pageNum: pageNum, pagePer: pagePer)
                        UserScreen(viewModel: userViewModel)
                    }
                }

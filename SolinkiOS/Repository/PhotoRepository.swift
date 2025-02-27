@@ -11,13 +11,13 @@ protocol PhotoRepository {
     func fetchPhotoById(page: Int, perPage: Int) async -> ApiResult<PhotoResponse>
 }
 
-class PhotoRepositoryImpl: PhotoRepository {
-    private let photoService: PhotoService
-
-    init(photoService: PhotoService) {
-        self.photoService = photoService
+class MockPhotoRepository: PhotoRepository {
+    func fetchPhotoById(page: Int, perPage: Int) async -> ApiResult<PhotoResponse> {
+        return .success(PhotoResponse(photos: []))
     }
+}
 
+class PhotoRepositoryImpl: PhotoRepository {
     func fetchPhotoById(page: Int, perPage: Int) async -> ApiResult<PhotoResponse> {
             do {
                 let endpoint = "v1/curated"
@@ -29,7 +29,7 @@ class PhotoRepositoryImpl: PhotoRepository {
                     "Authorization": "FyawVqgusyrCd8HvbeY1OpuPTp4fn0tcvaPvirjDMN1ua3uHDLM95Ikg" // Replace with your actual API key
                 ]
 
-                let photoResponse: PhotoResponse = try await photoService.request(
+                let photoResponse: PhotoResponse = try await PhotoService.shared.request(
                     endpoint,
                     parameters: parameters,
                     headers: headers
