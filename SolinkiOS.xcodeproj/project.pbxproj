@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		980650892D6FB2A3006E2EB7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 980650882D6FB2A3006E2EB7 /* Alamofire */; };
+		980650AD2D6FE127006E2EB7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 980650AC2D6FE127006E2EB7 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		981EB3C32D6FA7DC00F4BFC9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				980650AD2D6FE127006E2EB7 /* Kingfisher in Frameworks */,
+				980650892D6FB2A3006E2EB7 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = SolinkiOS;
 			packageProductDependencies = (
+				980650882D6FB2A3006E2EB7 /* Alamofire */,
+				980650AC2D6FE127006E2EB7 /* Kingfisher */,
 			);
 			productName = SolinkiOS;
 			productReference = 981EB3B22D6FA7DB00F4BFC9 /* SolinkiOS.app */;
@@ -195,6 +204,10 @@
 			);
 			mainGroup = 981EB3A92D6FA7DB00F4BFC9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				980650872D6FB2A3006E2EB7 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				980650AB2D6FE127006E2EB7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 981EB3B32D6FA7DB00F4BFC9 /* Products */;
 			projectDirPath = "";
@@ -558,6 +571,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		980650872D6FB2A3006E2EB7 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.10.2;
+			};
+		};
+		980650AB2D6FE127006E2EB7 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = exactVersion;
+				version = 8.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		980650882D6FB2A3006E2EB7 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 980650872D6FB2A3006E2EB7 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		980650AC2D6FE127006E2EB7 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 980650AB2D6FE127006E2EB7 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 981EB3AA2D6FA7DB00F4BFC9 /* Project object */;
 }

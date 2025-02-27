@@ -11,7 +11,7 @@ import SwiftUI
 struct SolinkiOSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SLNav()
         }
     }
 }
