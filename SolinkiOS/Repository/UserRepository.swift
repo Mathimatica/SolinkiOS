@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Alamofire
 
 import Foundation
 
@@ -20,20 +19,20 @@ class MockUserRepository: UserRepository {
     }
 }
 
-class UserRepositoryImpl: UserRepository {
-
-    func fetchUserById(userId: Int) async -> ApiResult<UserResponse> {
-        do {
-            let response: UserResponse = try await UserService.shared.request("users/\(userId)", method: .get)
-            return .success(response)
-        } catch {
-            if let afError = error as? AFError {
-                let statusCode = afError.responseCode ?? -1
-                let errorMessage = afError.errorDescription ?? "Unknown error"
-                return .error(statusCode, errorMessage)
-            } else {
-                return .error(-1, error.localizedDescription)
-            }
-        }
-    }
-}
+//class UserRepositoryImpl: UserRepository {
+//
+//    func fetchUserById(userId: Int) async -> ApiResult<UserResponse> {
+//        do {
+//            let response: UserResponse = try await UserService.shared.request("users/\(userId)", method: .get)
+//            return .success(response)
+//        } catch {
+//            if let afError = error as? AFError {
+//                let statusCode = afError.responseCode ?? -1
+//                let errorMessage = afError.errorDescription ?? "Unknown error"
+//                return .error(statusCode, errorMessage)
+//            } else {
+//                return .error(-1, error.localizedDescription)
+//            }
+//        }
+//    }
+//}

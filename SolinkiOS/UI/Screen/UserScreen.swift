@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct UserScreen: View {
     var state: UserStateHolder
@@ -15,11 +14,7 @@ struct UserScreen: View {
                 Text(state.userName)
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
-                KFImage(URL(string: state.photoUrl))
-                    .placeholder {
-                        Image("placeholder_profile_image").resizable()
-                    }
-                    .resizable()
+                SLImage(imageURLString: state.photoUrl)
                     .scaledToFill()
                     .frame(width: 200, height: 200)
                     .clipShape(Circle())

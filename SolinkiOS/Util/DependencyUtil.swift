@@ -23,15 +23,15 @@ class DependencyUtil {
         self.environment = env
     }
     
-    // Factory methods for dependencies
-    func makeUserRepository() -> UserRepository {
-        switch environment {
-        case .app:
-            return UserRepositoryImpl()
-        case .testing:
-            return MockUserRepository()
-        }
-    }
+//    // Factory methods for dependencies
+//    func makeUserRepository() -> UserRepository {
+//        switch environment {
+//        case .app:
+//            return UserRepositoryImpl()
+//        case .testing:
+//            return MockUserRepository()
+//        }
+//    }
     
     func makePhotoRepository() -> PhotoRepository {
         switch environment {

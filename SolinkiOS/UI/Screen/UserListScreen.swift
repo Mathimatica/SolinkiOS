@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct UserListScreen: View {
     
@@ -55,16 +54,7 @@ struct UserListItemView: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            KFImage(URL(string: stateHolder.imageURL))
-                .cacheMemoryOnly(false) // Matches ENABLED network cache
-                .cacheOriginalImage(false) // Matches DISABLED disk cache
-                .fade(duration: 0.25) // Matches crossfade(true)
-                .placeholder {
-                    Image("placeholder_profile_image")
-                        .resizable()
-                        .scaledToFill()
-                }
-                .resizable()
+            SLImage(imageURLString:stateHolder.imageURL)
                 .scaledToFill()
                 .frame(width: 64, height: 64)
                 .clipShape(Circle())
