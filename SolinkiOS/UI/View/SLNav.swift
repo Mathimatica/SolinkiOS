@@ -1,10 +1,3 @@
-//
-//  SLNav.swift
-//  SolinkiOS
-//
-//  Created by Josh Phillips on 2025-02-26.
-//
-
 import SwiftUI
 
 enum Destination: Hashable {
@@ -12,31 +5,75 @@ enum Destination: Hashable {
 }
 
 struct SLNav: View {
-    @State private var navigationPath = NavigationPath()
+    @State private var selectedTab = 0
     
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        
+        TabView(selection: $selectedTab) {
             
-            let userViewModel = UserListViewModel(pageNum: Int.random(in: 1...10), pagePer: 50)
-            UserListScreen(viewModel: userViewModel){ photo in
+            HomeView()
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+                .tag(0)
+            
+            FavoritesView()
+                .tabItem {
+                    Label("Favorites", systemImage: "heart")
+                }
+                .tag(1)
+            
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
+                .tag(2)
+        }
+    }
+}
+
+// HomeView with its own NavigationStack
+struct HomeView: View {
+    @State private var navigationPath = NavigationPath()
+
+    var body: some View {
+        NavigationStack(path: $navigationPath) {
+            UserListScreen() { photo in
                 navigationPath.append(Destination.user(name: photo.photographer, imageUrl: photo.src.original))
             }
             .navigationDestination(for: Destination.self) { destination in
                 switch destination {
                 case .user(let name, let imageUrl):
-                    UserScreen(state: UserStateHolder(userName:name, photoUrl:imageUrl)).navigationBarBackButtonHidden(true).toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            // Custom back button
-                            SLButton{
-                                navigationPath.removeLast()
+                    UserScreen(state: UserStateHolder(userName: name, photoUrl: imageUrl))
+                        .navigationBarBackButtonHidden(true)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                SLButton {
+                                    navigationPath.removeLast()
+                                }
                             }
                         }
-                    }
                 }
             }
         }
     }
-       
+}
+
+// Placeholder views for other tabs
+struct FavoritesView: View {
+    var body: some View {
+        NavigationStack {
+            Text("Favorites Screen")
+        }
+    }
+}
+
+struct SettingsView: View {
+    var body: some View {
+        NavigationStack {
+            Text("Settings Screen")
+        }
+    }
 }
 
 #Preview {

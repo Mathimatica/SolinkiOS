@@ -11,6 +11,10 @@ import SwiftUI
 struct SolinkiOSApp: App {
     
     init() {
+        
+        let appearance = UITabBarAppearance()
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        
         DependencyUtil.shared.setEnvironment(.app)
     }
     

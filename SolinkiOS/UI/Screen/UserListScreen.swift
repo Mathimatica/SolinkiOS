@@ -9,7 +9,9 @@ import SwiftUI
 import Kingfisher
 
 struct UserListScreen: View {
-    @ObservedObject var viewModel: UserListViewModel
+    
+    @StateObject var viewModel = UserListViewModel(pageNum:Int.random(in: 1...10), pagePer: 50)
+    
     let onClick: ((Photo) -> Void)
     var body: some View {
         UserListScreenContents(state: viewModel.state, onClick: onClick)

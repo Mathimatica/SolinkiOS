@@ -6,27 +6,48 @@
 //
 
 import Foundation
+import Combine
 
-@MainActor
+
+//@MainActor --> dont need because of .receive(on: DispatchQueue.main)
+
 class UserListViewModel : ObservableObject{
     private let photoRepository: PhotoRepository = DependencyUtil.shared.makePhotoRepository()
     @Published var state: StateHolder<UserListStateHolder> = .loading
-    private var fetchDataTask: Task<Void, Never>? // Store the Task
+    
+    private var fetchTrigger = PassthroughSubject<(Int, Int), Never>()
+    private var cancellables = Set<AnyCancellable>()
     
     init(pageNum: Int, pagePer: Int) {
+        setupBindings()
         fetchData(pageNum: pageNum, pagePer: pagePer)
     }
 
     func fetchData(pageNum: Int, pagePer: Int) {
-        fetchDataTask = Task { // Store the Task
-            self.state = .loading
-            let photoResult = await photoRepository.fetchPhotoById(page: pageNum, perPage: pagePer)
-            if fetchDataTask?.isCancelled ?? true { // Check again
-                return // Exit if cancelled
+        fetchTrigger.send((pageNum, pagePer))
+    }
+    
+    private func setupBindings() {
+        fetchTrigger
+            .flatMap { (pageNum, pagePer) in
+                Future<PhotoResponse, Error> { promise in
+                    Task {
+                        let result = await self.photoRepository.fetchPhotoById(page: pageNum, perPage: pagePer)
+                        switch result {
+                        case .success(let photoResponse):
+                            promise(.success(photoResponse))
+                        case .error(let code, let message):
+                            promise(.failure(APIError.serverError(code: code, message: message)))
+                        }
+                    }
+                }
             }
-            switch photoResult {
-            case .success(let photoResponse):
-                
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                if case .failure(let error) = completion {
+                    self.state = .error(error.localizedDescription)
+                }
+            } receiveValue: { photoResponse in
                 self.state = .success(UserListStateHolder(users: photoResponse.photos.map {it in
                     UserListItemStateHolder(
                         id: UUID(), name: it.photographer,
@@ -36,13 +57,7 @@ class UserListViewModel : ObservableObject{
                         }
                         )
                 }))
-            case .error(let code, let message):
-                self.state = .error("User Error \(code): \(message ?? "")")
             }
-        }
-    }
-
-    deinit {
-        fetchDataTask?.cancel() // Cancel the Task on deinit
+            .store(in: &cancellables)
     }
 }

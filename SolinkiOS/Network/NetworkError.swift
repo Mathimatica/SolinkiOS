@@ -8,6 +8,8 @@
 import Foundation
 
 enum NetworkError: Error {
-    case httpError(Int, String?)
+    case invalidURL
+    case invalidResponse
+    case httpError(Int, String)
     case unknownError(String)
 }

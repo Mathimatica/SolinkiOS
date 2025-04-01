@@ -29,7 +29,7 @@ class PhotoRepositoryImpl: PhotoRepository {
                     "Authorization": "FyawVqgusyrCd8HvbeY1OpuPTp4fn0tcvaPvirjDMN1ua3uHDLM95Ikg" // Replace with your actual API key
                 ]
 
-                let photoResponse: PhotoResponse = try await PhotoService.shared.request(
+                let photoResponse: PhotoResponse = try await PhotoServiceURLRequest.shared.request(
                     endpoint,
                     parameters: parameters,
                     headers: headers
@@ -42,6 +42,10 @@ class PhotoRepositoryImpl: PhotoRepository {
                     return .error(code, message)
                 case .unknownError(let message):
                     return .error(-1, message)
+                case .invalidURL:
+                    return .error(-1, "Unvalid URL")
+                case .invalidResponse:
+                    return .error(-1, "Invalid Response")
                 }
             } catch {
                 // Handle other errors
