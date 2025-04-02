@@ -20,5 +20,5 @@ enum APIError: Error {
 
 enum ApiResult<T> {
     case success(T)
-    case error(Int, String?)  // Code and message
+    case error(Int, String)  // Code and message
 }

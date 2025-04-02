@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 
 class PhotoService {
@@ -11,28 +12,35 @@ class PhotoService {
         queryParams: [String: Any]? = nil,
         parameters: [String: Any]? = nil,
         headers: [String: String]? = nil
-    ) async throws -> T {
-        
+    ) -> AnyPublisher<T, Error> {
         guard let url = buildURL(endpoint: endpoint, queryParams: queryParams) else {
-            throw NetworkError.invalidURL
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
         }
-
-        let request = try buildRequest(url: url, method: method, headers: headers, parameters: parameters)
-
-        let (data, response) = try await session.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-            let errorString = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw NetworkError.httpError(statusCode, errorString)
-        }
-
+        
         do {
-            let decodedResponse = try JSONDecoder().decode(T.self, from: data)
-            return decodedResponse
+            let request = try buildRequest(
+                url: url,
+                method: method,
+                headers: headers,
+                parameters: parameters
+            )
+            
+            return session.dataTaskPublisher(for: request)
+                .tryMap { data, response -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse,
+                          (200...299).contains(httpResponse.statusCode) else {
+                        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+                        let errorString = String(data: data, encoding: .utf8) ?? "Unknown error"
+                        throw NetworkError.httpError(statusCode, errorString)
+                    }
+                    return data
+                }
+                .decode(type: T.self, decoder: JSONDecoder())
+                .eraseToAnyPublisher()
         } catch {
-            throw NetworkError.dataDecodingError(error)
+            return Fail(error: error)
+                .eraseToAnyPublisher()
         }
     }
     
@@ -41,27 +49,32 @@ class PhotoService {
         configuration.timeoutIntervalForRequest = 30
         session = URLSession(configuration: configuration)
     }
-
+    
     private func buildURL(endpoint: String, queryParams: [String: Any]? = nil) -> URL? {
         var urlComponents = URLComponents(string: "\(baseURL)\(endpoint)")
-
+        
         if let queryParams = queryParams {
             urlComponents?.queryItems = queryParams.map {
-                URLQueryItem(name: $0.key, value: "\(String(describing: $0.value))") // Improved string conversion
+                URLQueryItem(name: $0.key, value: "\(String(describing: $0.value))")
             }
         }
-
+        
         return urlComponents?.url
     }
-
-    private func buildRequest(url: URL, method: String, headers: [String: String]? = nil, parameters: [String: Any]? = nil) throws -> URLRequest {
+    
+    private func buildRequest(
+        url: URL,
+        method: String,
+        headers: [String: String]? = nil,
+        parameters: [String: Any]? = nil
+    ) throws -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method
-
+        
         headers?.forEach {
             request.setValue($0.value, forHTTPHeaderField: $0.key)
         }
-
+        
         if let parameters = parameters {
             do {
                 request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
@@ -70,7 +83,7 @@ class PhotoService {
                 throw NetworkError.jsonEncodingError(error)
             }
         }
-
+        
         return request
     }
 }
