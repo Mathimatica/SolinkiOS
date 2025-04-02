@@ -7,15 +7,15 @@
 
 import Foundation
 
-import Foundation
-
 protocol UserRepository {
     func fetchUserById(userId: Int) async -> ApiResult<UserResponse>
 }
 
 class MockUserRepository: UserRepository {
     func fetchUserById(userId: Int) async -> ApiResult<UserResponse> {
-        return .success(UserResponse(id: 0, name: "Josh", username: "JoshUser", email: "Email"))
+        return .success(
+            UserResponse(
+                id: 0, name: "Josh", username: "JoshUser", email: "Email"))
     }
 }
 

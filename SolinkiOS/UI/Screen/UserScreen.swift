@@ -8,23 +8,29 @@
 import SwiftUI
 
 struct UserScreen: View {
+    
+    @StateObject var viewModel = UserListViewModel(
+        pageNum: Int.random(in: 1...10), pagePer: 50)
+    
     var state: UserStateHolder
     var body: some View {
-            VStack {
-                Text(state.userName)
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
-                SLImage(imageURLString: state.photoUrl)
-                    .scaledToFill()
-                    .frame(width: 200, height: 200)
-                    .clipShape(Circle())
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // Center the VStack contents
-            .padding(16)
+        VStack {
+            Text(state.userName)
+                .font(.largeTitle)
+                .multilineTextAlignment(.center)
+            SLImage(imageURLString: state.photoUrl)
+                .scaledToFill()
+                .frame(width: 200, height: 200)
+                .clipShape(Circle())
         }
+        //.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // Center the VStack contents
+        //.padding(16)
+    }
 }
 
 // Preview provider
 #Preview("Success State") {
-    UserScreen(state: UserStateHolder(userName: "Preview User", photoUrl: "https://picsum.photos/200"))
+    UserScreen(
+        state: UserStateHolder(
+            userName: "Preview User", photoUrl: "https://picsum.photos/200"))
 }

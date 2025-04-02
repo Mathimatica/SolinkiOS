@@ -32,10 +32,21 @@ struct SLImage: View {
                     .scaledToFill()
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: imageURLString) // Optional animation
+        .animation(.easeInOut(duration: 0.25), value: imageURLString)  // Optional animation
     }
 }
 
 #Preview {
-    SLImage(imageURLString: "https://via.placeholder.com/150")
+    GeometryReader { geometry in
+        VStack(alignment: .center) {
+            SLImage(
+                imageURLString:
+                    "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?cs=srgb&dl=pexels-pixabay-104827.jpg&fm=jpg"
+            )
+            .frame(width: geometry.size.width, height: geometry.size.width)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.black, lineWidth: 5))
+        }
+        .frame(width: geometry.size.width, height: geometry.size.height)  // make it fill the
+    }
 }
