@@ -68,7 +68,7 @@ struct HomeView: View {
 struct FavoritesView: View {
     var body: some View {
         NavigationStack {
-            Text("Favorites Screen")
+            CardsView()
         }
     }
 }

@@ -11,5 +11,6 @@ enum NetworkError: Error {
     case invalidURL
     case invalidResponse
     case httpError(Int, String)
-    case unknownError(String)
+    case dataDecodingError(Error)
+    case jsonEncodingError(Error) // Added for JSONSerialization errors
 }

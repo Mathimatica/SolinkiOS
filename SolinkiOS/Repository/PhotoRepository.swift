@@ -26,8 +26,7 @@ class PhotoRepositoryImpl: PhotoRepository {
         PhotoResponse
     > {
         do {
-            let endpoint = "v1/curated"
-            let parameters: [String: Any] = [
+            let queryParams: [String: Any] = [
                 "page": page,
                 "per_page": perPage,
             ]
@@ -35,11 +34,11 @@ class PhotoRepositoryImpl: PhotoRepository {
                 "Authorization":
                     "FyawVqgusyrCd8HvbeY1OpuPTp4fn0tcvaPvirjDMN1ua3uHDLM95Ikg"  // Replace with your actual API key
             ]
-
             let photoResponse: PhotoResponse =
-                try await PhotoServiceURLRequest.shared.request(
-                    endpoint,
-                    parameters: parameters,
+                try await PhotoService.shared.request(
+                    "v1/curated",
+                    method: "GET",
+                    queryParams: queryParams,
                     headers: headers
                 )
             return .success(photoResponse)
@@ -48,12 +47,14 @@ class PhotoRepositoryImpl: PhotoRepository {
             switch networkError {
             case .httpError(let code, let message):
                 return .error(code, message)
-            case .unknownError(let message):
-                return .error(-1, message)
             case .invalidURL:
                 return .error(-1, "Unvalid URL")
             case .invalidResponse:
                 return .error(-1, "Invalid Response")
+            case .dataDecodingError(_):
+                return .error(-1, "Data Decoding Error")
+            case .jsonEncodingError(_):
+                return .error(-1, "JSon Encoding Error")
             }
         } catch {
             // Handle other errors
