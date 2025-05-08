@@ -7,7 +7,7 @@ protocol CardData: Identifiable {
     var type: CardType { get }
 }
 
-indirect enum CardType {
+enum CardType {
     case imageText(ImageData)
     case video(VideoData)
     case custom(CustomData)
